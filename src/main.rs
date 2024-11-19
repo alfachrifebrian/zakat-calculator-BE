@@ -5,6 +5,7 @@ use web_pages::controllers::sqlite_controller::rocket;
 
 mod sqlite_helpers;
 mod web_pages;
+mod rocket_helpers;
 
 #[macro_use]
 extern crate rocket;
