@@ -1,27 +1,21 @@
-use rocket::{
-    http::Status,
-    response::{self, Responder},
-    serde::json::Json,
-    Request,
-};
+use rocket::http::Status;
 use serde::Serialize;
 
 #[derive(Serialize)]
-pub struct AppResponse<T> {
+pub struct ResponseEnvelope<T> {
     pub status: Status,
     pub message: T,
 }
 
-#[derive(Responder)]
-#[response(content_type = "json")]
-pub struct ResponseEnvelope<T> {
-    pub inner: (Status, T),
+#[derive(Serialize)]
+pub struct DummyResponse {
+    pub id: i32,
+    pub name: String,
+    pub dum: DummyResponse2,
 }
 
-// impl<T> ResponseEnvelope<T> {
-//     pub fn new(_status: Status, _message: T) -> Self {
-//         Self {
-//             inner: (_status, Json(_message)),
-//         }
-//     }
-// }
+#[derive(Serialize)]
+pub struct DummyResponse2 {
+    pub id: i32,
+    pub name: String,
+}
