@@ -23,4 +23,8 @@ impl SqliteConnection {
         });
       }
     }
+
+    pub fn is_exist(&self) -> &bool {
+      &self.is_exist
+    }
 }
