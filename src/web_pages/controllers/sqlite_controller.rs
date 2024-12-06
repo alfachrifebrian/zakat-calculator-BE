@@ -42,6 +42,9 @@ fn hello() -> &'static str {
 //     })
 // }
 
+use rocket_okapi::{openapi, openapi_get_routes};
+
+#[openapi]
 #[get("/welcome")]
 fn welcome() -> Json<ResponseEnvelope<String>> {
     match SqliteConnection::first_run_check() {
@@ -67,8 +70,6 @@ fn welcome() -> Json<ResponseEnvelope<String>> {
         }),
     }
 }
-
-use rocket_okapi::{openapi, openapi_get_routes};
 
 #[openapi]
 #[get("/list-zakat")]
@@ -144,7 +145,7 @@ pub fn rocket() -> _ {
 
     rocket::build()
         .configure(rocket::Config::figment().merge(("port", 58555)))
-        .mount("/sqlite", openapi_get_routes![get_zakat_types])
+        .mount("/sqlite", openapi_get_routes![welcome, get_zakat_types])
         .mount(
             "/swagger",
             make_swagger_ui(&SwaggerUIConfig {
