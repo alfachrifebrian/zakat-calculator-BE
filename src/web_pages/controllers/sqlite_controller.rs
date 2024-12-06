@@ -1,8 +1,9 @@
 use rocket::{
     http::{Method, Status},
     response::status,
-    serde::json::Json,
+    serde::json::{serde_json, Json},
 };
+
 use rocket_cors::{AllowedOrigins, CorsOptions};
 
 use crate::{
@@ -13,36 +14,37 @@ use crate::{
 };
 
 use rocket_okapi::swagger_ui::{make_swagger_ui, SwaggerUIConfig};
+use rocket_okapi::{openapi, openapi_get_routes};
 
+#[openapi]
 #[get("/hello")]
 fn hello() -> &'static str {
     "Hello, world from sqlite!"
 }
 
-// #[get("/get_username")]
-// fn get_username() -> Json<ResponseEnvelope<String>> {
-//     // Serialize DummyResponse into a String
-//     let dummy_response = DummyResponse {
-//         id: 1,
-//         name: "Ari".to_string(),
-//         dum: DummyResponse2 {
-//             id: 2,
-//             name: "Pepe".to_string(),
-//         },
-//     };
+#[openapi]
+#[get("/get_username")]
+fn get_username() -> Json<ResponseEnvelope<String>> {
+    // Serialize DummyResponse into a String
+    let dummy_response = DummyResponse {
+        id: 1,
+        name: "Ari".to_string(),
+        dum: DummyResponse2 {
+            id: 2,
+            name: "Pepe".to_string(),
+        },
+    };
 
-//     // Convert the DummyResponse to a JSON string
-//     let serialized_message = serde_json::to_string(&dummy_response).unwrap(); // Serialize DummyResponse to String
+    // Convert the DummyResponse to a JSON string
+    let serialized_message = serde_json::to_string(&dummy_response).unwrap(); // Serialize DummyResponse to String
 
-//     // Return the response with the serialized string as the message
-//     Json(ResponseEnvelope::<String> {
-//         status: ApiStatus::Ok,
-//         message: serialized_message,
-//         data: None,
-//     })
-// }
-
-use rocket_okapi::{openapi, openapi_get_routes};
+    // Return the response with the serialized string as the message
+    Json(ResponseEnvelope::<String> {
+        status: ApiStatus::Ok,
+        message: serialized_message,
+        data: None,
+    })
+}
 
 #[openapi]
 #[get("/welcome")]
@@ -145,7 +147,10 @@ pub fn rocket() -> _ {
 
     rocket::build()
         .configure(rocket::Config::figment().merge(("port", 58555)))
-        .mount("/sqlite", openapi_get_routes![welcome, get_zakat_types])
+        .mount(
+            "/sqlite",
+            openapi_get_routes![hello, welcome, get_username, get_zakat_types],
+        )
         .mount(
             "/swagger",
             make_swagger_ui(&SwaggerUIConfig {
