@@ -4,9 +4,9 @@ use log::{info};
 use tokio::runtime::Runtime;
 use web_pages::controllers::sqlite_controller::rocket;
 
+mod rocket_helpers;
 mod sqlite_helpers;
 mod web_pages;
-mod rocket_helpers;
 
 #[macro_use]
 extern crate rocket;
@@ -28,6 +28,6 @@ async fn main() {
         });
     });
 
-    loop{}
+    loop {}
     // Another code
 }
