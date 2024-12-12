@@ -1,3 +1,4 @@
+use log::info;
 use rocket::{
     http::{Method, Status},
     response::status,
@@ -19,6 +20,7 @@ use rocket_okapi::{openapi, openapi_get_routes};
 #[openapi]
 #[get("/hello")]
 fn hello() -> &'static str {
+    info!("Hello, world from sqlite!");
     "Hello, world from sqlite!"
 }
 
@@ -65,11 +67,14 @@ fn welcome() -> Json<ResponseEnvelope<String>> {
                 })
             }
         }
-        Err(error) => Json(ResponseEnvelope::<String> {
-            status: ApiStatus::InternalServerError,
-            message: error.to_string(),
-            data: None,
-        }),
+        Err(error) => {
+            log::error!("{}",error.to_string());
+            Json(ResponseEnvelope::<String> {
+                status: ApiStatus::InternalServerError,
+                message: error.to_string(),
+                data: None,
+            })
+        }
     }
 }
 
